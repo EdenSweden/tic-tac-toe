@@ -1,0 +1,132 @@
+import { useState, useRef } from 'react'
+import './App.css'
+
+type Square = {
+  id: number;
+  value: string;
+  combos: number[][];
+  disabled: boolean;
+};
+
+
+const squaresInitState: Square[] = [{
+    id: 0,
+    value: '',
+    combos: [[1,2],[4,8],[3,6]],
+    disabled: false
+  },
+  {
+    id: 1,
+    value: '',
+    combos: [[4,7]],
+    disabled: false
+  },
+  {
+    id: 2,
+    value: '',
+    combos: [[0,1],[4,6],[5,8]],
+    disabled: false
+  },
+  {
+    id: 3,
+    value: '',
+    combos: [[0,6], [4,5]],
+    disabled: false
+  },
+  {
+    id: 4,
+    value: '',
+    combos: [[0,8],[1,7],[2,6],[3,5],[1,7]],
+    disabled: false
+  },
+  {
+    id: 5,
+    value: '',
+    combos: [[2,8],[3,4]],
+    disabled: false
+  },
+  {
+    id: 6,
+    value: '',
+    combos: [[0,3],[2,4],[7,8]],
+    disabled: false
+  },
+  {
+    id: 7,
+    value: '',
+    combos: [[6,8],[2,5]],
+    disabled: false
+  },
+  {
+    id : 8,
+    value: '',
+    combos: [[0,4],[2,5],[6,7]],
+    disabled: false
+  }];
+
+function App() {
+
+  const [whoWon, setWhoWon] = useState<string>('');
+  const numTurnsRef = useRef<number>(0);
+  const [whoseTurnIsIt, setWhoseTurnIsIt] = useState<string>('X');
+  const [squares, setSquares] = useState<Square[]>(squaresInitState);
+
+const toggleTurn: () => void = () => {
+    setWhoseTurnIsIt(whoseTurnIsIt === 'X' ? 'O' : 'X');
+  }
+
+const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  let index = Number(e.currentTarget.id);
+  setSquares((prevState: Square[]) => ([...prevState.slice(0, index), {...prevState[index], disabled: true, value: whoseTurnIsIt}, ...prevState.slice(index + 1, 9)]));
+  numTurnsRef.current++;
+  if (numTurnsRef.current >= 5){
+    checkForWinner(index, whoseTurnIsIt);
+  }
+  toggleTurn();
+  }
+
+  const checkForWinner = (latestClickedId: number, whoseTurn: string) => {
+    if (!squares.find(s => Number(s.id) !== latestClickedId && s.value === '')) {
+      console.log('tie');
+      setWhoWon('tie');
+    }
+    let latestClicked = squares[latestClickedId];
+    latestClicked.combos.forEach(combo => {
+      if (squares[combo[0]].value === whoseTurn && squares[combo[1]].value === whoseTurn){
+        setWhoWon(whoseTurn);
+        disableAllSquares();
+      }
+    })
+  }
+
+const disableAllSquares = () => {
+  setSquares(prevState => prevState.map(a => ({...a, disabled: true})));
+}
+
+
+const reset: () => void = () => {
+    setSquares(squaresInitState);
+    setWhoseTurnIsIt('X');
+    numTurnsRef.current = 0;
+    setWhoWon('');
+  }
+
+
+  return (
+    <div id='background-box' className='bg-gray-300 px-15 py-10 rounded-lg'>
+  <h1 className='mb-15'>{whoWon === '' ? `Next player: ${whoseTurnIsIt}` : whoWon === 'tie' ? 'It\'s a tie!': `${whoWon} won!`}</h1>
+    <div id='container' className='grid grid-cols-[8rem_8rem_8rem] grid-rows-[8rem_8rem_8rem] gap-1 mb-20'>
+      {squares.map(square => (<button className='square text-center'
+      id={square.id.toString()}
+      key={square.id}
+      onClick={handleClick}
+      disabled={square.disabled}
+      >{square.value}
+      </button>))}
+    </div>
+  <button id='reset' onClick={reset}>Reset board</button>
+  </div>
+  )
+}
+
+export default App
