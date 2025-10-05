@@ -71,6 +71,10 @@ function App() {
   const [whoseTurnIsIt, setWhoseTurnIsIt] = useState<string>('X');
   const [squares, setSquares] = useState<Square[]>(squaresInitState);
 
+  // useEffect(() => {
+  //   console.log('squares: ', squares);
+  // },[])
+
 const toggleTurn: () => void = () => {
     setWhoseTurnIsIt(whoseTurnIsIt === 'X' ? 'O' : 'X');
   }
@@ -91,7 +95,7 @@ const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
       setWhoWon('tie');
     }
     let latestClicked = squares[latestClickedId];
-    latestClicked.combos.forEach(combo => {
+    latestClicked.combos.forEach((combo: number[]) => {
       if (squares[combo[0]].value === whoseTurn && squares[combo[1]].value === whoseTurn){
         setWhoWon(whoseTurn);
         disableAllSquares();
@@ -111,20 +115,21 @@ const reset: () => void = () => {
     setWhoWon('');
   }
 
-
   return (
-    <div id='background-box' className='bg-gray-300 px-15 py-10 rounded-lg'>
-  <h1 className='mb-15'>{whoWon === '' ? `Next player: ${whoseTurnIsIt}` : whoWon === 'tie' ? 'It\'s a tie!': `${whoWon} won!`}</h1>
-    <div id='container' className='grid grid-cols-[8rem_8rem_8rem] grid-rows-[8rem_8rem_8rem] gap-1 mb-20'>
-      {squares.map(square => (<button className='square text-center'
-      id={square.id.toString()}
-      key={square.id}
-      onClick={handleClick}
-      disabled={square.disabled}
-      >{square.value}
-      </button>))}
+    <div className='flex justify-center items-center h-screen bg-blue-200 font-[cursive]'>
+      <div id='background-box' className='bg-linear-to-r from-indigo-400 to-violet-400 p-15 flex flex-col justify-center items-center gap-10 rounded-xl w-fit'>
+        <h1 className='text-center text-5xl mb-5'>{whoWon === '' ? `Next player: ${whoseTurnIsIt}` : whoWon === 'tie' ? 'It\'s a tie!': `${whoWon} won!`}</h1>
+          <div id='container' className='grid grid-cols-3 grid-rows-3 gap-3'>
+            {squares.map(square => (<button className='square cursor-pointer rounded-lg text-center p-0 text-5xl bg-gray-100 h-24 w-24'
+            id={square.id.toString()}
+            key={square.id}
+            onClick={handleClick}
+            disabled={square.disabled}
+            >{square.value}
+            </button>))}
+          </div>
+        <button className='cursor-pointer rounded-lg p-5 bg-gray-200 hover:ring-3 hover:ring-fuchsia-600' id='reset' onClick={reset}>Reset board</button>
     </div>
-  <button id='reset' onClick={reset}>Reset board</button>
   </div>
   )
 }
