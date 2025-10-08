@@ -71,10 +71,6 @@ function App() {
   const [whoseTurnIsIt, setWhoseTurnIsIt] = useState<string>('X');
   const [squares, setSquares] = useState<Square[]>(squaresInitState);
 
-  // useEffect(() => {
-  //   console.log('squares: ', squares);
-  // },[])
-
 const toggleTurn: () => void = () => {
     setWhoseTurnIsIt(whoseTurnIsIt === 'X' ? 'O' : 'X');
   }
@@ -91,7 +87,6 @@ const handleClick = (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
 
   const checkForWinner = (latestClickedId: number, whoseTurn: string) => {
     if (!squares.find(s => Number(s.id) !== latestClickedId && s.value === '')) {
-      console.log('tie');
       setWhoWon('tie');
     }
     let latestClicked = squares[latestClickedId];
@@ -116,12 +111,12 @@ const reset: () => void = () => {
   }
 
   return (
-    <div className='flex justify-center items-center h-screen bg-blue-200 font-[cursive]'>
-      <div id='background-box' className='ring-3 ring-violet-700 bg-linear-to-r from-indigo-400 to-violet-400 p-15 flex flex-col justify-center items-center gap-10 rounded-xl w-fit md:min-w-[455px]'>
+    <div className='flex justify-center items-center h-screen bg-blue-200 dark:bg-gray-800 dark:text-blue-400 font-[cursive]'>
+      <div id='background-box' className='ring-3 ring-violet-700 dark:ring-white dark:ring-1 bg-linear-to-r from-indigo-400 to-violet-400 dark:from-blue-700 dark:to-blue-900  p-15 flex flex-col justify-center items-center gap-10 rounded-xl w-fit md:min-w-[455px]'>
         {whoWon === '' && <h1 className='text-5xl mb-5 w-full'>{`Next player: ${whoseTurnIsIt}`}</h1>}
         {whoWon && <h1 className='text-5xl mb-5 text-center'>{whoWon === 'tie' ? 'It\'s a tie!': `${whoWon} won!`}</h1>}
           <div id='container' className='grid grid-cols-3 grid-rows-3 gap-3'>
-            {squares.map(square => (<button className='square cursor-pointer rounded-lg text-center p-0 text-5xl bg-gray-100 h-24 w-24'
+            {squares.map(square => (<button className='square cursor-pointer rounded-lg text-center p-0 text-5xl bg-gray-100 dark:bg-gray-800 h-24 w-24 hover:ring-4 hover:ring-fuchsia-600 disabled:ring-0 disabled:cursor-default'
             id={square.id.toString()}
             key={square.id}
             onClick={handleClick}
@@ -129,7 +124,7 @@ const reset: () => void = () => {
             >{square.value}
             </button>))}
           </div>
-        <button className='cursor-pointer rounded-lg p-5 bg-gray-200 hover:ring-3 hover:ring-fuchsia-600 text-xl' id='reset' onClick={reset}>Reset board</button>
+        <button className='cursor-pointer rounded-lg p-5 bg-gray-200 dark:bg-gray-800 hover:ring-4 hover:ring-fuchsia-600 text-xl' id='reset' onClick={reset}>Reset board</button>
     </div>
   </div>
   )
