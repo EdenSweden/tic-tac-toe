@@ -117,8 +117,9 @@ const reset: () => void = () => {
 
   return (
     <div className='flex justify-center items-center h-screen bg-blue-200 font-[cursive]'>
-      <div id='background-box' className='bg-linear-to-r from-indigo-400 to-violet-400 p-15 flex flex-col justify-center items-center gap-10 rounded-xl w-fit'>
-        <h1 className='text-center text-5xl mb-5'>{whoWon === '' ? `Next player: ${whoseTurnIsIt}` : whoWon === 'tie' ? 'It\'s a tie!': `${whoWon} won!`}</h1>
+      <div id='background-box' className='ring-3 ring-violet-700 bg-linear-to-r from-indigo-400 to-violet-400 p-15 flex flex-col justify-center items-center gap-10 rounded-xl w-fit md:min-w-[455px]'>
+        {whoWon === '' && <h1 className='text-5xl mb-5 w-full'>{`Next player: ${whoseTurnIsIt}`}</h1>}
+        {whoWon && <h1 className='text-5xl mb-5 text-center'>{whoWon === 'tie' ? 'It\'s a tie!': `${whoWon} won!`}</h1>}
           <div id='container' className='grid grid-cols-3 grid-rows-3 gap-3'>
             {squares.map(square => (<button className='square cursor-pointer rounded-lg text-center p-0 text-5xl bg-gray-100 h-24 w-24'
             id={square.id.toString()}
@@ -128,7 +129,7 @@ const reset: () => void = () => {
             >{square.value}
             </button>))}
           </div>
-        <button className='cursor-pointer rounded-lg p-5 bg-gray-200 hover:ring-3 hover:ring-fuchsia-600' id='reset' onClick={reset}>Reset board</button>
+        <button className='cursor-pointer rounded-lg p-5 bg-gray-200 hover:ring-3 hover:ring-fuchsia-600 text-xl' id='reset' onClick={reset}>Reset board</button>
     </div>
   </div>
   )
