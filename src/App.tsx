@@ -73,10 +73,8 @@ function App() {
   const [squares, setSquares] = useState<Square[]>(squaresInitState);
   const [theme, setTheme] = useState<'light'|'dark'|'system'>(localStorage.getItem('selectedTheme') as 'light'|'dark'|'system'  || 'system');
   const [isDark, setIsDark] = useState<boolean>(localStorage.getItem('selectedTheme') === 'dark' || (localStorage.getItem('selectedTheme') === 'system' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches));
-  const renderCount = useRef<number>(0);
 
   useEffect(() => {
-    console.log('theme changed to: ', theme);
     localStorage.setItem('selectedTheme', theme);
     if (theme === 'dark') {
       setIsDark(true);
@@ -99,11 +97,6 @@ function App() {
     
     return () => window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', updateDarkStateAutomatically);
   }, [theme])
-
-  useEffect(() => {
-    renderCount.current++;
-    console.log('renderCount: ', renderCount.current);
-  })
 
 const toggleTurn: () => void = () => {
     setWhoseTurnIsIt(whoseTurnIsIt === 'X' ? 'O' : 'X');
@@ -146,9 +139,9 @@ const reset: () => void = () => {
 
   return (
     <div className={`${isDark ?'dark ' : ''}flex justify-center items-center h-screen bg-blue-200 dark:bg-gray-800 font-sans relative`}>
-      <ThemeSwitcher className='absolute top-5 right-20' defaultValue='system' value={theme} onChange={setTheme} />
-      <div id='background-box' className='ring-3 ring-violet-700 dark:ring-white dark:ring-1 bg-linear-to-r from-indigo-400 to-violet-400 dark:from-blue-700 dark:to-blue-900  p-15 flex flex-col justify-center items-center gap-10 rounded-xl w-fit md:min-w-[455px]'>
-        {whoWon === '' && <h1 className='text-5xl mb-5 w-full dark:text-white'>{`Next player: ${whoseTurnIsIt}`}</h1>}
+      <ThemeSwitcher className='md:scale-100 scale-125 absolute bottom-4 right-7 md:top-5 md:bottom-0 md:right-15' defaultValue='system' value={theme} onChange={setTheme} />
+      <div id='background-box' className='ring-3 ring-violet-700 dark:ring-white dark:ring-1 bg-linear-to-r from-indigo-400 to-violet-400 dark:from-blue-700 dark:to-blue-900 md:p-15 flex flex-col justify-center items-center gap-10 md:rounded-xl w-full h-full md:h-auto md:w-fit md:min-w-[455px]'>
+        {whoWon === '' && <h1 className='md:text-left text-center text-5xl mb-5 w-full dark:text-white'>{`Next player: ${whoseTurnIsIt}`}</h1>}
         {whoWon && <h1 className='text-5xl mb-5 text-center dark:text-white'>{whoWon === 'tie' ? 'It\'s a tie!': `${whoWon} won!`}</h1>}
           <div id='container' className='grid grid-cols-3 grid-rows-3 gap-3'>
             {squares.map(square => (<button className='square cursor-pointer rounded-lg text-center p-0 text-5xl bg-gray-100 h-24 w-24 hover:ring-4 hover:ring-fuchsia-600 disabled:ring-0 disabled:cursor-default font-[cursive]'
