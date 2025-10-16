@@ -12,4 +12,5 @@ export default defineConfig({
     }),
     tailwindcss()
   ],
+  base: 'https://edensweden.github.io/tic-tac-toe/'
 })
