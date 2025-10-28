@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import './App.css'
 import { ThemeSwitcher } from './components/ui/shadcn-io/theme-switcher';
 
@@ -82,20 +82,25 @@ function App() {
       setIsDark(false);
     } else if (theme === 'system' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches){
       setIsDark(true);
+    } else if (theme === 'system' && window.matchMedia && !window.matchMedia('(prefers-color-scheme: dark)').matches){
+      setIsDark(false);
     }
 
   }, [theme])
 
+
+  const updateDarkStateAutomatically = useCallback((e: MediaQueryListEvent) => {
+      setIsDark(e.matches ? true : false); 
+  }, [setIsDark])
+
   useEffect(() => {
-    if (theme !== 'system') return;
-    const updateDarkStateAutomatically = (e: MediaQueryListEvent) => {
-      setIsDark(e.matches ? true : false);
-    }
-    if (theme === 'system') {
+    if (theme === 'system'){
       window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateDarkStateAutomatically);
     }
-    
-    return () => window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', updateDarkStateAutomatically);
+
+    return () => {
+      window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', updateDarkStateAutomatically);
+    }
   }, [theme])
 
 const toggleTurn: () => void = () => {
